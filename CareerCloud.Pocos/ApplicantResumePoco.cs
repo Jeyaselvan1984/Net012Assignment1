@@ -1,10 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-  
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+
 namespace CareerCloud.Pocos
 {
-    class ApplicantResumePoco
+   [ Table("Applicant_Resumes")]
+    class ApplicantResumePoco : IPoco
     {
+        [Key]
+        public Guid Id { get; set; }
+
+        public Guid Applicant { get; set; }
+        
+            public string Resume { get; set; }
+        [Column("Last_Updated")]
+            public DateTime? LastUpdated { get; set; }
     }
 }
