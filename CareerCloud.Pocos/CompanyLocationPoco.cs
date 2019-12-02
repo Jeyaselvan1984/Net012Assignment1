@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CareerCloud.Pocos
 {
     [Table("Company_Locations")]
-    class CompanyLocationPoco : IPoco
+    public class CompanyLocationPoco : IPoco
     {
         
         [Key]
