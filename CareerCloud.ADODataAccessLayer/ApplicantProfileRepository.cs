@@ -54,12 +54,12 @@ namespace CareerCloud.ADODataAccessLayer
                                         @City_Town,
                                         @Zip_Postal_Code)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
-                    comm.Parameters.AddWithValue("@Applicant", poco.Login);
+                    comm.Parameters.AddWithValue("@Login", poco.Login);
                     comm.Parameters.AddWithValue("@Current_Salary", poco.CurrentSalary);
                     comm.Parameters.AddWithValue("@Current_Rate", poco.CurrentRate);
                     comm.Parameters.AddWithValue("@Currency", poco.Currency);
                     comm.Parameters.AddWithValue("@Country_Code", poco.Country);
-                    comm.Parameters.AddWithValue("@State_Provice_Code", poco.Province);
+                    comm.Parameters.AddWithValue("@State_Province_Code", poco.Province);
                     comm.Parameters.AddWithValue("@Street_Address", poco.Street);
                     comm.Parameters.AddWithValue("@City_Town", poco.City);
                     comm.Parameters.AddWithValue("@Zip_Postal_Code", poco.PostalCode);
@@ -104,7 +104,7 @@ namespace CareerCloud.ADODataAccessLayer
                 {
                     ApplicantProfilePoco poco = new ApplicantProfilePoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Login = Guid.Parse((string)reader["Login"]);
+                    poco.Login = reader.GetGuid(1);
                     poco.CurrentSalary = reader.GetDecimal(2);
                     poco.CurrentRate = reader.GetDecimal(3);
                     poco.Country = (string)reader["Country_Code"];
@@ -159,16 +159,16 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Applicant_Profiles]
-                                       SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Login] = <Login, uniqueidentifier,>
-                                          ,[Current_Salary] = <Current_Salary, decimal(18,0),>
-                                          ,[Current_Rate] = <Current_Rate, decimal(18,2),>
-                                          ,[Currency] = <Currency, char(10),>
-                                          ,[Country_Code] = <Country_Code, char(10),>
-                                          ,[State_Province_Code] = <State_Province_Code, char(10),>
-                                          ,[Street_Address] = <Street_Address, nvarchar(100),>
-                                          ,[City_Town] = <City_Town, nvarchar(100),>
-                                          ,[Zip_Postal_Code] = <Zip_Postal_Code, char(20),>
+                                       SET [Id] = @Id
+                                          ,[Login] = @Login
+                                          ,[Current_Salary] = @Current_Salary
+                                          ,[Current_Rate] = @Current_Rate
+                                          ,[Currency] = @Currency
+                                          ,[Country_Code] = @Country_Code
+                                          ,[State_Province_Code] = @State_Province_Code
+                                          ,[Street_Address] = @Street_Address
+                                          ,[City_Town] = @City_Town
+                                          ,[Zip_Postal_Code] = @Zip_Postal_Code
                                      WHERE [Id] = @id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Applicant", poco.Login);
@@ -183,7 +183,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

@@ -43,7 +43,7 @@ namespace CareerCloud.ADODataAccessLayer
                                             @Last_Updated)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
                     comm.Parameters.AddWithValue("@Applicant", poco.Applicant);
-                    comm.Parameters.AddWithValue("@Job", poco.Resume);
+                    comm.Parameters.AddWithValue("@Resume", poco.Resume);
                     comm.Parameters.AddWithValue("@Last_Updated", poco.LastUpdated);
 
 
@@ -79,7 +79,7 @@ namespace CareerCloud.ADODataAccessLayer
                 {
                     ApplicantResumePoco poco = new ApplicantResumePoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Applicant = Guid.Parse((string)reader["Applicant"]);
+                    poco.Applicant = reader.GetGuid(1);
                     poco.Resume = (string)reader["Resume"];
                     poco.LastUpdated = reader.GetDateTime(3);
                    
@@ -129,10 +129,10 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Applicant_Resumes]
-                                       SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Applicant] = <Applicant, uniqueidentifier,>
-                                          ,[Resume] = <Resume, nvarchar(max),>
-                                          ,[Last_Updated] = <Last_Updated, datetime2(7),>
+                                       SET [Id] = @Id
+                                          ,[Applicant] = @Applicant
+                                          ,[Resume] = @Resume
+                                          ,[Last_Updated] = @Last_Updated
                                      WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Applicant", poco.Applicant);
@@ -141,7 +141,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

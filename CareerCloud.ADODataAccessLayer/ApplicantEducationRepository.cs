@@ -92,7 +92,7 @@ namespace CareerCloud.ADODataAccessLayer
                 {
                     ApplicantEducationPoco poco = new ApplicantEducationPoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Applicant = Guid.Parse((string)reader["Applicant"]);
+                    poco.Applicant = reader.GetGuid(1);
                     poco.Major = reader.GetString(2);
                     poco.CertificateDiploma = reader.GetString(3);
                     poco.StartDate = reader.GetDateTime(4);
@@ -127,7 +127,7 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (ApplicantEducationPoco poco in items)
                 {
                     cmd.CommandText = @"DELETE Applicant_Educations 
-                                        where ID = @id";
+                                        where ID = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     conn.Open();
                     cmd.ExecuteNonQuery();
@@ -144,14 +144,13 @@ namespace CareerCloud.ADODataAccessLayer
                 cmd.Connection = connection;
                 foreach (var poco in items)
                 {
-                    cmd.CommandText = @"UPDATE[dbo].[Applicant_Educations]
-                       SET[Id] = < Id, uniqueidentifier,>
-                          ,[Applicant] = <Applicant, uniqueidentifier,>
-                          ,[Major] = <Major, nvarchar(100),>
-                          ,[Certificate_Diploma] = <Certificate_Diploma, nvarchar(100),>
-                          ,[Start_Date] = <Start_Date, date,>
-                          ,[Completion_Date] = <Completion_Date, date,>
-                          ,[Completion_Percent] = <Completion_Percent, tinyint,>
+                    cmd.CommandText = @"UPDATE [dbo].[Applicant_Educations] SET [Id] = @Id
+                          ,[Applicant] = @Applicant
+                          ,[Major] = @Major
+                          ,[Certificate_Diploma] = @Certificate_Diploma
+                          ,[Start_Date] = @Start_Date
+                          ,[Completion_Date] = @Completion_Date
+                          ,[Completion_Percent] = @Completion_Percent 
                      WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Applicant", poco.Applicant);
@@ -161,8 +160,9 @@ namespace CareerCloud.ADODataAccessLayer
                     cmd.Parameters.AddWithValue("@Completion_Date", poco.CompletionDate);
                     cmd.Parameters.AddWithValue("@Completion_Percent", poco.CompletionPercent);
                     connection.Open();
+                    
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

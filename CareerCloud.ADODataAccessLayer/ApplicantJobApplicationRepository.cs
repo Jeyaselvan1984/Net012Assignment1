@@ -80,7 +80,7 @@ namespace CareerCloud.ADODataAccessLayer
                 {
                     ApplicantJobApplicationPoco poco = new ApplicantJobApplicationPoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Applicant = Guid.Parse((string)reader["Applicant"]);
+                    poco.Applicant = reader.GetGuid(1);
                     poco.Job = reader.GetGuid(2);
                     poco.ApplicationDate = reader.GetDateTime(3);
                     poco.TimeStamp = (byte[])reader[4];
@@ -130,10 +130,10 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Applicant_Job_Applications]
-                                       SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Applicant] = <Applicant, uniqueidentifier,>
-                                          ,[Job] = <Job, uniqueidentifier,>
-                                          ,[Application_Date] = <Application_Date, datetime2(7),>
+                                       SET [Id] = @Id
+                                          ,[Applicant] = @Applicant
+                                          ,[Job] = @Job
+                                          ,[Application_Date] = @Application_Date
                                      WHERE [Id] = @id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Applicant", poco.Applicant);
@@ -142,7 +142,7 @@ namespace CareerCloud.ADODataAccessLayer
    
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }
