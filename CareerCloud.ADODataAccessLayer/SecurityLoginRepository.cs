@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace CareerCloud.ADODataAccessLayer
 {
-    class SecurityLoginRepository : IDataRepository<SecurityLoginPoco>
+    public class SecurityLoginRepository : IDataRepository<SecurityLoginPoco>
     {
         private string _connStr;
         public SecurityLoginRepository()
@@ -158,7 +158,7 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (SecurityLoginPoco poco in items)
                 {
                     cmd.CommandText = @"DELETE Security_Logins
-                                        where ID = @id";
+                                        where ID = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     conn.Open();
                     cmd.ExecuteNonQuery();

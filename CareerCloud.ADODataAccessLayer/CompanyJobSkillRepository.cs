@@ -13,7 +13,7 @@ using System.Linq;
 namespace CareerCloud.ADODataAccessLayer
 {
 
-    class CompanyJobSkillRepository : IDataRepository<CompanyJobSkillPoco>
+    public class CompanyJobSkillRepository : IDataRepository<CompanyJobSkillPoco>
     {
         private string _connStr;
         public CompanyJobSkillRepository()

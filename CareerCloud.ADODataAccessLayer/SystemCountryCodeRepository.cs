@@ -12,10 +12,10 @@ using System.Linq;
 
 namespace CareerCloud.ADODataAccessLayer
 {
-    public class SecurityRoleRepository : IDataRepository<SecurityRolePoco>
+    public class SystemCountryCodeRepository : IDataRepository<SystemCountryCodePoco>
     {
         private string _connStr;
-        public SecurityRoleRepository()
+        public SystemCountryCodeRepository()
         {
             var config = new ConfigurationBuilder();
             var path = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
@@ -23,25 +23,23 @@ namespace CareerCloud.ADODataAccessLayer
             var root = config.Build();
             _connStr = root.GetSection("ConnectionStrings").GetSection("DataConnection").Value;
         }
-        public void Add(params SecurityRolePoco[] items)
+        public void Add(params SystemCountryCodePoco[] items)
         {
             using (SqlConnection connection = new SqlConnection(_connStr))
             {
-                foreach (SecurityRolePoco poco in items)
+                foreach (SystemCountryCodePoco poco in items)
                 {
                     SqlCommand comm = new SqlCommand();
                     comm.Connection = connection;
-                    comm.CommandText = @"INSERT INTO [dbo].[Security_Roles]
-                                           ([Id]
-                                           ,[Role]
-                                           ,[Is_Inactive])
-                                     VALUES
-                                           (Id,
-                                            Role,
-                                            Is_Inactive)";
-                    comm.Parameters.AddWithValue("@Id", poco.Id);
-                    comm.Parameters.AddWithValue("@Role", poco.Role);
-                    comm.Parameters.AddWithValue("@Is_Inactive", poco.IsInactive);
+                    comm.CommandText = @"INSERT INTO [dbo].[System_Country_Codes]
+                                        ([Code]
+                                        ,[Name])
+                                    VALUES
+                                        (Code, 
+                                         Name)";
+                    comm.Parameters.AddWithValue("@Code", poco.Code);
+                    comm.Parameters.AddWithValue("@Name", poco.Name);
+                
                     connection.Open();
                     int rowAffected = comm.ExecuteNonQuery();
                     connection.Close();
@@ -55,26 +53,25 @@ namespace CareerCloud.ADODataAccessLayer
             throw new NotImplementedException();
         }
 
-        public IList<SecurityRolePoco> GetAll(params Expression<Func<SecurityRolePoco, object>>[] navigationProperties)
+        public IList<SystemCountryCodePoco> GetAll(params Expression<Func<SystemCountryCodePoco, object>>[] navigationProperties)
         {
             using (SqlConnection conn = new SqlConnection(_connStr))
             {
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = conn;
-                cmd.CommandText = @"SELECT [Id]
-                                  ,[Role]
-                                  ,[Is_Inactive]
-                              FROM [dbo].[Security_Roles]";
+                cmd.CommandText = @"SELECT [Code]
+                                  ,[Name]
+                              FROM [dbo].[System_Country_Codes]";
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
-                SecurityRolePoco[] pocos = new SecurityRolePoco[500];
+                SystemCountryCodePoco[] pocos = new SystemCountryCodePoco[500];
                 int index = 0;
                 while (reader.Read())
                 {
-                    SecurityRolePoco poco = new SecurityRolePoco();
-                    poco.Id = reader.GetGuid(0);
-                    poco.Role = (string)reader["Role"];
-                    poco.IsInactive = reader.GetBoolean(2);
+                    SystemCountryCodePoco poco = new SystemCountryCodePoco();
+                    poco.Code = (string)reader["Code"];
+                    poco.Name = (string)reader["Name"];
+                   
                     pocos[index] = poco;
                     index++;
                 }
@@ -83,28 +80,29 @@ namespace CareerCloud.ADODataAccessLayer
             }
         }
 
-        public IList<SecurityRolePoco> GetList(Expression<Func<SecurityRolePoco, bool>> where, params Expression<Func<SecurityRolePoco, object>>[] navigationProperties)
+        public IList<SystemCountryCodePoco> GetList(Expression<Func<SystemCountryCodePoco, bool>> where, params Expression<Func<SystemCountryCodePoco, object>>[] navigationProperties)
         {
             throw new NotImplementedException();
         }
 
-        public SecurityRolePoco GetSingle(Expression<Func<SecurityRolePoco, bool>> where, params Expression<Func<SecurityRolePoco, object>>[] navigationProperties)
+        public SystemCountryCodePoco GetSingle(Expression<Func<SystemCountryCodePoco, bool>> where, params Expression<Func<SystemCountryCodePoco, object>>[] navigationProperties)
         {
-            IQueryable<SecurityRolePoco> pocos = GetAll().AsQueryable();
+
+            IQueryable<SystemCountryCodePoco> pocos = GetAll().AsQueryable();
             return pocos.Where(where).FirstOrDefault();
         }
 
-        public void Remove(params SecurityRolePoco[] items)
+        public void Remove(params SystemCountryCodePoco[] items)
         {
             using (SqlConnection conn = new SqlConnection(_connStr))
             {
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = conn;
-                foreach (SecurityRolePoco poco in items)
+                foreach (SystemCountryCodePoco poco in items)
                 {
-                    cmd.CommandText = @"DELETE Security_Roles   
-                                        where ID = @id";
-                    cmd.Parameters.AddWithValue("@Id", poco.Id);
+                    cmd.CommandText = @"DELETE System_Country_Codes
+                                        where Code = @Code";
+                    cmd.Parameters.AddWithValue("@Code", poco.Code);
                     conn.Open();
                     cmd.ExecuteNonQuery();
                     conn.Close();
@@ -112,7 +110,7 @@ namespace CareerCloud.ADODataAccessLayer
             }
         }
 
-        public void Update(params SecurityRolePoco[] items)
+        public void Update(params SystemCountryCodePoco[] items)
         {
             using (SqlConnection connection = new SqlConnection(_connStr))
             {
@@ -120,16 +118,12 @@ namespace CareerCloud.ADODataAccessLayer
                 cmd.Connection = connection;
                 foreach (var poco in items)
                 {
-                    cmd.CommandText = @"UPDATE [dbo].[Security_Roles]
-                                       SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Role] = <Role, varchar(50),>
-                                          ,[Is_Inactive] = <Is_Inactive, bit,>
-                                     WHERE [Id] = @Id";
-
-                    cmd.Parameters.AddWithValue("@Id", poco.Id);
-                    cmd.Parameters.AddWithValue("@Role", poco.Role);
-                    cmd.Parameters.AddWithValue("@Is_Inactive", poco.IsInactive);
-          
+                    cmd.CommandText = @"UPDATE [dbo].[System_Country_Codes]
+                                           SET [Code] = <Code, char(10),>
+                                              ,[Name] = <Name, nvarchar(50),>
+                                         WHERE [Code] = @Code";
+                    cmd.Parameters.AddWithValue("@Code", poco.Code);
+                    cmd.Parameters.AddWithValue("@Name", poco.Name);
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();

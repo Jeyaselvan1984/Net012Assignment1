@@ -12,10 +12,10 @@ using System.Linq;
 
 namespace CareerCloud.ADODataAccessLayer
 {
-    public class CompanyJobRepository : IDataRepository<CompanyJobPoco>
+    public class SecurityLoginsRoleRepository : IDataRepository<SecurityLoginsRolePoco>
     {
         private string _connStr;
-        public CompanyJobRepository()
+        public SecurityLoginsRoleRepository()
         {
             var config = new ConfigurationBuilder();
             var path = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
@@ -23,35 +23,26 @@ namespace CareerCloud.ADODataAccessLayer
             var root = config.Build();
             _connStr = root.GetSection("ConnectionStrings").GetSection("DataConnection").Value;
         }
-        public void Add(params CompanyJobPoco[] items)
+
+        public void Add(params SecurityLoginsRolePoco[] items)
         {
             using (SqlConnection connection = new SqlConnection(_connStr))
             {
-                foreach (CompanyJobPoco poco in items)
+                foreach (SecurityLoginsRolePoco poco in items)
                 {
                     SqlCommand comm = new SqlCommand();
                     comm.Connection = connection;
-                    comm.CommandText = @"INSERT INTO [dbo].[Company_Jobs]
-                                       ([Id]
-                                       ,[Company]
-                                       ,[Profile_Created]
-                                       ,[Is_Inactive]
-                                       ,[Is_Company_Hidden])
-                                 VALUES
-                                       (Id, 
-                                        Company, 
-                                        Profile_Created, 
-                                        Is_Inactive, 
-                                        Is_Company_Hidden)";
+                    comm.CommandText = @"INSERT INTO [dbo].[Security_Logins_Roles]
+                                        ([Id]
+                                        ,[Login]
+                                        ,[Role])
+                                    VALUES
+                                        (Id, 
+                                        Login, 
+                                        Role)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
-                    comm.Parameters.AddWithValue("@Company", poco.Company);
-                    comm.Parameters.AddWithValue("@Profile_Created", poco.ProfileCreated);
-                    comm.Parameters.AddWithValue("@Is_Inactive", poco.IsInactive);
-                    comm.Parameters.AddWithValue("@Is_Company_Hidden", poco.IsCompanyHidden);
-
-
-
-
+                    comm.Parameters.AddWithValue("@Login", poco.Login);
+                    comm.Parameters.AddWithValue("@Role", poco.Role);
                     connection.Open();
                     int rowAffected = comm.ExecuteNonQuery();
                     connection.Close();
@@ -65,32 +56,28 @@ namespace CareerCloud.ADODataAccessLayer
             throw new NotImplementedException();
         }
 
-        public IList<CompanyJobPoco> GetAll(params Expression<Func<CompanyJobPoco, object>>[] navigationProperties)
+        public IList<SecurityLoginsRolePoco> GetAll(params Expression<Func<SecurityLoginsRolePoco, object>>[] navigationProperties)
         {
             using (SqlConnection conn = new SqlConnection(_connStr))
             {
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = conn;
                 cmd.CommandText = @"SELECT [Id]
-                                  ,[Company]
-                                  ,[Profile_Created]
-                                  ,[Is_Inactive]
-                                  ,[Is_Company_Hidden]
+                                  ,[Login]
+                                  ,[Role]
                                   ,[Time_Stamp]
-                              FROM [dbo].[Company_Jobs]";
+                              FROM [dbo].[Security_Logins_Roles]";
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
-                CompanyJobPoco[] pocos = new CompanyJobPoco[500];
+                SecurityLoginsRolePoco[] pocos = new SecurityLoginsRolePoco[500];
                 int index = 0;
                 while (reader.Read())
                 {
-                    CompanyJobPoco poco = new CompanyJobPoco();
+                    SecurityLoginsRolePoco poco = new SecurityLoginsRolePoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Company = Guid.Parse((string)reader["Company"]);
-                    poco.ProfileCreated = reader.GetDateTime(2);
-                    poco.IsInactive = reader.GetBoolean(3);
-                    poco.IsCompanyHidden = reader.GetBoolean(4);
-                    poco.TimeStamp = (Byte[])reader[5];
+                    poco.Login = reader.GetGuid(1);
+                    poco.Role = reader.GetGuid(2);
+                    poco.TimeStamp = (byte[])reader[3];
                     pocos[index] = poco;
                     index++;
                 }
@@ -99,26 +86,26 @@ namespace CareerCloud.ADODataAccessLayer
             }
         }
 
-        public IList<CompanyJobPoco> GetList(Expression<Func<CompanyJobPoco, bool>> where, params Expression<Func<CompanyJobPoco, object>>[] navigationProperties)
+        public IList<SecurityLoginsRolePoco> GetList(Expression<Func<SecurityLoginsRolePoco, bool>> where, params Expression<Func<SecurityLoginsRolePoco, object>>[] navigationProperties)
         {
             throw new NotImplementedException();
         }
 
-        public CompanyJobPoco GetSingle(Expression<Func<CompanyJobPoco, bool>> where, params Expression<Func<CompanyJobPoco, object>>[] navigationProperties)
+        public SecurityLoginsRolePoco GetSingle(Expression<Func<SecurityLoginsRolePoco, bool>> where, params Expression<Func<SecurityLoginsRolePoco, object>>[] navigationProperties)
         {
-            IQueryable<CompanyJobPoco> pocos = GetAll().AsQueryable();
+            IQueryable<SecurityLoginsRolePoco> pocos = GetAll().AsQueryable();
             return pocos.Where(where).FirstOrDefault();
         }
 
-        public void Remove(params CompanyJobPoco[] items)
+        public void Remove(params SecurityLoginsRolePoco[] items)
         {
             using (SqlConnection conn = new SqlConnection(_connStr))
             {
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = conn;
-                foreach (CompanyJobPoco poco in items)
+                foreach (SecurityLoginsRolePoco poco in items)
                 {
-                    cmd.CommandText = @"DELETE Company_Jobs
+                    cmd.CommandText = @"DELETE Security_Logins_Roles   
                                         where ID = @id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     conn.Open();
@@ -128,7 +115,7 @@ namespace CareerCloud.ADODataAccessLayer
             }
         }
 
-        public void Update(params CompanyJobPoco[] items)
+        public void Update(params SecurityLoginsRolePoco[] items)
         {
             using (SqlConnection connection = new SqlConnection(_connStr))
             {
@@ -136,18 +123,16 @@ namespace CareerCloud.ADODataAccessLayer
                 cmd.Connection = connection;
                 foreach (var poco in items)
                 {
-                    cmd.CommandText = @"UPDATE [dbo].[Company_Jobs]
+                    cmd.CommandText = @"UPDATE [dbo].[Security_Logins_Roles]
                                        SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Company] = <Company, uniqueidentifier,>
-                                          ,[Profile_Created] = <Profile_Created, datetime2(7),>
-                                          ,[Is_Inactive] = <Is_Inactive, bit,>
-                                          ,[Is_Company_Hidden] = <Is_Company_Hidden, bit,>
+                                          ,[Login] = <Login, uniqueidentifier,>
+                                          ,[Role] = <Role, uniqueidentifier,>
                                      WHERE [Id] = @Id";
+
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
-                    cmd.Parameters.AddWithValue("@Company", poco.Company);
-                    cmd.Parameters.AddWithValue("@Profile_Created", poco.ProfileCreated);
-                    cmd.Parameters.AddWithValue("@Is_Inactive", poco.IsInactive);
-                    cmd.Parameters.AddWithValue("@Is_Company_Hidden", poco.IsCompanyHidden);
+                    cmd.Parameters.AddWithValue("@Login", poco.Login);
+                    cmd.Parameters.AddWithValue("@Role", poco.Role);
+
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
