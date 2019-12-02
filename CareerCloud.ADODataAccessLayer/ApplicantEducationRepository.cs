@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
+using System.Linq;
 
 namespace CareerCloud.ADODataAccessLayer
 {
@@ -28,10 +29,10 @@ namespace CareerCloud.ADODataAccessLayer
             using (SqlConnection connection = new SqlConnection(_connStr))
             {
                 foreach (ApplicantEducationPoco poco in items)
-                { 
-                SqlCommand comm = new SqlCommand();
-                comm.Connection = connection;
-                comm.CommandText = @"INSERT INTO[dbo].[Applicant_Educations]
+                {
+                    SqlCommand comm = new SqlCommand();
+                    comm.Connection = connection;
+                    comm.CommandText = @"INSERT INTO[dbo].[Applicant_Educations]
                                        ([Id]
                                        ,[Applicant]
                                        ,[Major]
@@ -70,7 +71,7 @@ namespace CareerCloud.ADODataAccessLayer
 
         public IList<ApplicantEducationPoco> GetAll(params Expression<Func<ApplicantEducationPoco, object>>[] navigationProperties)
         {
-            using(SqlConnection conn = new SqlConnection(_connStr))
+            using (SqlConnection conn = new SqlConnection(_connStr))
             {
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = conn;
@@ -87,7 +88,7 @@ namespace CareerCloud.ADODataAccessLayer
                 SqlDataReader reader = cmd.ExecuteReader();
                 ApplicantEducationPoco[] pocos = new ApplicantEducationPoco[500];
                 int index = 0;
-                while(reader.Read())
+                while (reader.Read())
                 {
                     ApplicantEducationPoco poco = new ApplicantEducationPoco();
                     poco.Id = reader.GetGuid(0);
@@ -102,7 +103,7 @@ namespace CareerCloud.ADODataAccessLayer
                     index++;
                 }
                 conn.Close();
-                return pocos;
+                return pocos.Where(a => a != null).ToList();
             }
         }
 
@@ -113,7 +114,8 @@ namespace CareerCloud.ADODataAccessLayer
 
         public ApplicantEducationPoco GetSingle(Expression<Func<ApplicantEducationPoco, bool>> where, params Expression<Func<ApplicantEducationPoco, object>>[] navigationProperties)
         {
-            throw new NotImplementedException();
+            IQueryable<ApplicantEducationPoco> pocos = GetAll().AsQueryable();
+            return pocos.Where(where).FirstOrDefault();
         }
 
         public void Remove(params ApplicantEducationPoco[] items)
@@ -160,14 +162,14 @@ namespace CareerCloud.ADODataAccessLayer
                     cmd.Parameters.AddWithValue("@Completion_Percent", poco.CompletionPercent);
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count !=-1)
+                    if (count != -1)
                     {
                         throw new Exception();
                     }
                     connection.Close();
                 }
             }
+        }
     }
-
       
 }

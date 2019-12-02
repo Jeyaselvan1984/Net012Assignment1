@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CareerCloud.Pocos", "Career
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CareerCloudCore.UnitTests.Assignment1", "CareerCloudCore.UnitTests.Assignment1\CareerCloudCore.UnitTests.Assignment1.csproj", "{2DF21B9A-8A33-4AF1-95EB-C3440EC6361E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerCloud.DataAccessLayer", "CareerCloud.DataAccessLayer\CareerCloud.DataAccessLayer.csproj", "{CC420C05-13F8-4006-9B1F-A836E99DC888}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CareerCloud.DataAccessLayer", "CareerCloud.DataAccessLayer\CareerCloud.DataAccessLayer.csproj", "{CC420C05-13F8-4006-9B1F-A836E99DC888}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CareerCloud.ADODataAccessLayer", "CareerCloud.ADODataAccessLayer\CareerCloud.ADODataAccessLayer.csproj", "{8B54E423-26E9-4116-8621-CED4CEA212FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CareerCloud.ADODataAccessLayer", "CareerCloud.ADODataAccessLayer\CareerCloud.ADODataAccessLayer.csproj", "{8B54E423-26E9-4116-8621-CED4CEA212FC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CareerCloudCore.UnitTests.Assignment2", "CareerCloudCore.UnitTests.Assignment2\CareerCloudCore.UnitTests.Assignment2.csproj", "{7CFDB844-9B4C-4012-A7F7-5966B3D7F86E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{8B54E423-26E9-4116-8621-CED4CEA212FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B54E423-26E9-4116-8621-CED4CEA212FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B54E423-26E9-4116-8621-CED4CEA212FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CFDB844-9B4C-4012-A7F7-5966B3D7F86E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CFDB844-9B4C-4012-A7F7-5966B3D7F86E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CFDB844-9B4C-4012-A7F7-5966B3D7F86E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CFDB844-9B4C-4012-A7F7-5966B3D7F86E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
