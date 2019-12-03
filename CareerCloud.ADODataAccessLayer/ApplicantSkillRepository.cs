@@ -97,8 +97,8 @@ namespace CareerCloud.ADODataAccessLayer
                     ApplicantSkillPoco poco = new ApplicantSkillPoco();
                     poco.Id = reader.GetGuid(0);
                     poco.Applicant = reader.GetGuid(1);
-                    poco.Skill = (string)reader["Skill"];
-                    poco.SkillLevel = (string)reader["Skill_Level"];
+                    poco.Skill = reader["Skill"].ToString();
+                    poco.SkillLevel = reader["Skill_Level"].ToString();
                     poco.StartMonth = reader.GetByte(4);
                     poco.StartYear = reader.GetInt32(5);
                     poco.EndMonth = reader.GetByte(6);
@@ -152,14 +152,14 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Applicant_Skills]
-                                   SET [Id] = Id
-                                      ,[Applicant] = Applicant
-                                      ,[Skill] = Skill
-                                      ,[Skill_Level] = Skill_Level
-                                      ,[Start_Month] = Start_Month
-                                      ,[Start_Year] = Start_Year
-                                      ,[End_Month] = End_Month
-                                      ,[End_Year] = End_Year
+                                   SET [Id] = @Id
+                                      ,[Applicant] = @Applicant
+                                      ,[Skill] = @Skill
+                                      ,[Skill_Level] = @Skill_Level
+                                      ,[Start_Month] = @Start_Month
+                                      ,[Start_Year] = @Start_Year
+                                      ,[End_Month] = @End_Month
+                                      ,[End_Year] = @End_Year
                                  WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Applicant", poco.Applicant);
