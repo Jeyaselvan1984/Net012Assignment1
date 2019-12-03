@@ -107,12 +107,13 @@ namespace CareerCloud.ADODataAccessLayer
                     poco.Login = reader.GetGuid(1);
                     poco.CurrentSalary = reader.GetDecimal(2);
                     poco.CurrentRate = reader.GetDecimal(3);
+                    poco.Currency = (string)reader["Currency"];
                     poco.Country = (string)reader["Country_Code"];
                     poco.Province = (string)reader["State_Province_Code"];
                     poco.Street = (string)reader["Street_Address"];
                     poco.City = (string)reader["City_Town"];
                     poco.PostalCode = (string)reader["Zip_Postal_Code"];
-                    poco.TimeStamp = (byte[])reader[9];
+                    poco.TimeStamp = (byte[])reader[10];
                     pocos[index] = poco;
                     index++;
                 }
@@ -171,12 +172,12 @@ namespace CareerCloud.ADODataAccessLayer
                                           ,[Zip_Postal_Code] = @Zip_Postal_Code
                                      WHERE [Id] = @id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
-                    cmd.Parameters.AddWithValue("@Applicant", poco.Login);
+                    cmd.Parameters.AddWithValue("@Login", poco.Login);
                     cmd.Parameters.AddWithValue("@Current_Salary", poco.CurrentSalary);
                     cmd.Parameters.AddWithValue("@Current_Rate", poco.CurrentRate);
                     cmd.Parameters.AddWithValue("@Currency", poco.Currency);
                     cmd.Parameters.AddWithValue("@Country_Code", poco.Country);
-                    cmd.Parameters.AddWithValue("@State_Provice_Code", poco.Province);
+                    cmd.Parameters.AddWithValue("@State_Province_Code", poco.Province);
                     cmd.Parameters.AddWithValue("@Street_Address", poco.Street);
                     cmd.Parameters.AddWithValue("@City_Town", poco.City);
                     cmd.Parameters.AddWithValue("@Zip_Postal_Code", poco.PostalCode);
