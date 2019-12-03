@@ -38,11 +38,11 @@ namespace CareerCloud.ADODataAccessLayer
                                        ,[Is_Inactive]
                                        ,[Is_Company_Hidden])
                                  VALUES
-                                       (Id, 
-                                        Company, 
-                                        Profile_Created, 
-                                        Is_Inactive, 
-                                        Is_Company_Hidden)";
+                                       (@Id, 
+                                        @Company, 
+                                        @Profile_Created, 
+                                        @Is_Inactive, 
+                                        @Is_Company_Hidden)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
                     comm.Parameters.AddWithValue("@Company", poco.Company);
                     comm.Parameters.AddWithValue("@Profile_Created", poco.ProfileCreated);
@@ -80,13 +80,13 @@ namespace CareerCloud.ADODataAccessLayer
                               FROM [dbo].[Company_Jobs]";
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
-                CompanyJobPoco[] pocos = new CompanyJobPoco[500];
+                CompanyJobPoco[] pocos = new CompanyJobPoco[2000];
                 int index = 0;
                 while (reader.Read())
                 {
                     CompanyJobPoco poco = new CompanyJobPoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Company = Guid.Parse((string)reader["Company"]);
+                    poco.Company = reader.GetGuid(1);
                     poco.ProfileCreated = reader.GetDateTime(2);
                     poco.IsInactive = reader.GetBoolean(3);
                     poco.IsCompanyHidden = reader.GetBoolean(4);
@@ -137,11 +137,11 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Company_Jobs]
-                                       SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Company] = <Company, uniqueidentifier,>
-                                          ,[Profile_Created] = <Profile_Created, datetime2(7),>
-                                          ,[Is_Inactive] = <Is_Inactive, bit,>
-                                          ,[Is_Company_Hidden] = <Is_Company_Hidden, bit,>
+                                       SET [Id] = @Id
+                                          ,[Company] = @Company
+                                          ,[Profile_Created] = @Profile_Created
+                                          ,[Is_Inactive] = @Is_Inactive
+                                          ,[Is_Company_Hidden] = @Is_Company_Hidden
                                      WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Company", poco.Company);
@@ -151,7 +151,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

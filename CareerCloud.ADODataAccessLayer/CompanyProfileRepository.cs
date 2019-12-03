@@ -39,12 +39,12 @@ namespace CareerCloud.ADODataAccessLayer
                                        ,[Contact_Name]
                                        ,[Company_Logo])
                                  VALUES
-                                       (Id, 
-                                        Registration_Date, 
-                                        Company_Website,
-                                        Contact_Phone,
-                                        Contact_Name, 
-                                        Company_Logo)";
+                                       (@Id, 
+                                        @Registration_Date, 
+                                        @Company_Website,
+                                        @Contact_Phone,
+                                        @Contact_Name, 
+                                        @Company_Logo)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
                     comm.Parameters.AddWithValue("@Registration_Date", poco.RegistrationDate);
                     comm.Parameters.AddWithValue("@Company_Website", poco.CompanyWebsite);
@@ -91,10 +91,19 @@ namespace CareerCloud.ADODataAccessLayer
                     CompanyProfilePoco poco = new CompanyProfilePoco();
                     poco.Id = reader.GetGuid(0);                 
                     poco.RegistrationDate = reader.GetDateTime(1);
-                    poco.CompanyWebsite = (string)reader["Company_Website"];
+                    if (!reader.IsDBNull(2))
+                        poco.CompanyWebsite = (string)reader["Company_Website"];
+                    else
+                        poco.CompanyWebsite = null;
                     poco.ContactPhone = (string)reader["Contact_Phone"];
-                    poco.ContactName = (string)reader["Contact_Name"];
-                    poco.CompanyLogo = (Byte[])reader[5];
+                    if (!reader.IsDBNull(4))
+                        poco.ContactName = (string)reader["Contact_Name"];
+                    else
+                        poco.ContactName = null;
+                    if (!reader.IsDBNull(5))
+                        poco.CompanyLogo = (Byte[])reader[5];
+                    else
+                        poco.CompanyLogo = null;
                     poco.TimeStamp = (Byte[])reader[6];
                     pocos[index] = poco;
                     index++;
@@ -142,12 +151,12 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Company_Profiles]
-                                       SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Registration_Date] = <Registration_Date, datetime2(7),>
-                                          ,[Company_Website] = <Company_Website, varchar(100),>
-                                          ,[Contact_Phone] = <Contact_Phone, varchar(20),>
-                                          ,[Contact_Name] = <Contact_Name, varchar(50),>
-                                          ,[Company_Logo] = <Company_Logo, varbinary(max),>
+                                       SET [Id] = @Id
+                                          ,[Registration_Date] = @Registration_Date
+                                          ,[Company_Website] = @Company_Website
+                                          ,[Contact_Phone] = @Contact_Phone
+                                          ,[Contact_Name] = @Contact_Name
+                                          ,[Company_Logo] = @Company_Logo
                                      WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Registration_Date", poco.RegistrationDate);
@@ -158,7 +167,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

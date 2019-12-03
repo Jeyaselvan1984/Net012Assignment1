@@ -46,19 +46,19 @@ namespace CareerCloud.ADODataAccessLayer
                                            ,[Force_Change_Password]
                                            ,[Prefferred_Language])
                                      VALUES
-                                           (Id,
-                                            Login,
-                                            Password,
-                                            Created_Date,
-                                            Password_Update_Date,
-                                            Agreement_Accepted_Date,
-                                            Is_Locked,
-                                            Is_Inactive,
-                                            Email_Address,
-                                            Phone_Number,
-                                            Full_Name,
-                                            Force_Change_Password,
-                                            Preferred_Language)";
+                                           (@Id,
+                                            @Login,
+                                            @Password,
+                                            @Created_Date,
+                                            @Password_Update_Date,
+                                            @Agreement_Accepted_Date,
+                                            @Is_Locked,
+                                            @Is_Inactive,
+                                            @Email_Address,
+                                            @Phone_Number,
+                                            @Full_Name,
+                                            @Force_Change_Password,
+                                            @Preferred_Language)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
                     comm.Parameters.AddWithValue("@Login", poco.Login);
                     comm.Parameters.AddWithValue("@Password", poco.Password);
@@ -121,15 +121,28 @@ namespace CareerCloud.ADODataAccessLayer
                     poco.Login = (string)reader["Login"];
                     poco.Password = (string)reader["Password"];
                     poco.Created = reader.GetDateTime(3);
-                    poco.PasswordUpdate = reader.GetDateTime(4);
-                    poco.AgreementAccepted = reader.GetDateTime(5);
+                    if (!reader.IsDBNull(4))
+                        poco.PasswordUpdate = reader.GetDateTime(4);
+                    else
+                        poco.PasswordUpdate = null;
+                    if (!reader.IsDBNull(5))
+                        poco.AgreementAccepted = reader.GetDateTime(5);
+                    else
+                        poco.AgreementAccepted = null;
                     poco.IsLocked = reader.GetBoolean(6);
                     poco.IsInactive = reader.GetBoolean(7);
                     poco.EmailAddress = (string)reader["Email_Address"];
-                    poco.PhoneNumber = (string)reader["Phone_Number"];
+                    if (!reader.IsDBNull(9))
+                        poco.PhoneNumber = (string)reader["Phone_Number"];
+                  
+                    else
+                        poco.PhoneNumber = null;
                     poco.FullName = (string)reader["Full_Name"];
                     poco.ForceChangePassword = reader.GetBoolean(11);
-                    poco.PrefferredLanguage = (string)reader["Prefferred_Language"];
+                    if (!reader.IsDBNull(12))
+                        poco.PrefferredLanguage = (string)reader["Prefferred_Language"];
+                    else
+                        poco.PrefferredLanguage = null;
                     pocos[index] = poco;
                     index++;
                 }
@@ -176,19 +189,19 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Security_Logins]
-                                       SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Login] = <Login, varchar(50),>
-                                          ,[Password] = <Password, varchar(100),>
-                                          ,[Created_Date] = <Created_Date, datetime2(7),>
-                                          ,[Password_Update_Date] = <Password_Update_Date, datetime2(7),>
-                                          ,[Agreement_Accepted_Date] = <Agreement_Accepted_Date, datetime2(7),>
-                                          ,[Is_Locked] = <Is_Locked, bit,>
-                                          ,[Is_Inactive] = <Is_Inactive, bit,>
-                                          ,[Email_Address] = <Email_Address, varchar(50),>
-                                          ,[Phone_Number] = <Phone_Number, varchar(20),>
-                                          ,[Full_Name] = <Full_Name, nvarchar(100),>
-                                          ,[Force_Change_Password] = <Force_Change_Password, bit,>
-                                          ,[Prefferred_Language] = <Prefferred_Language, char(10),>
+                                       SET [Id] = @Id
+                                          ,[Login] = @Login
+                                          ,[Password] = @Password
+                                          ,[Created_Date] = @Created_Date
+                                          ,[Password_Update_Date] = @Password_Update_date
+                                          ,[Agreement_Accepted_Date] = @Agreement_Accepted_Date
+                                          ,[Is_Locked] = @Is_Locked
+                                          ,[Is_Inactive] = @Is_Inactive
+                                          ,[Email_Address] = @Email_Address
+                                          ,[Phone_Number] = @Phone_Number
+                                          ,[Full_Name] = @Full_Name
+                                          ,[Force_Change_Password] = @Force_Change_Password
+                                          ,[Prefferred_Language] = @Prefferred_Language
                                      WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Login", poco.Login);
@@ -206,7 +219,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <=0 )
                     {
                         throw new Exception();
                     }

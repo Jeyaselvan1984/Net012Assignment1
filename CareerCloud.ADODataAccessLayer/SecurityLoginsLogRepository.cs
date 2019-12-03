@@ -38,11 +38,11 @@ namespace CareerCloud.ADODataAccessLayer
                                        ,[Logon_Date]
                                        ,[Is_Succesful])
                                  VALUES
-                                       (Id, 
-                                        Login, 
-                                        Source_IP, 
-                                        Logon_Date, 
-                                        Is_Succesful)";
+                                       (@Id, 
+                                        @Login, 
+                                        @Source_IP, 
+                                        @Logon_Date, 
+                                        @Is_Succesful)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
                     comm.Parameters.AddWithValue("@Login", poco.Login);
                     comm.Parameters.AddWithValue("@Source_IP", poco.SourceIP);
@@ -80,14 +80,14 @@ namespace CareerCloud.ADODataAccessLayer
                               FROM [dbo].[Security_Logins_Log]";
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
-                SecurityLoginsLogPoco[] pocos = new SecurityLoginsLogPoco[500];
+                SecurityLoginsLogPoco[] pocos = new SecurityLoginsLogPoco[5000];
                 int index = 0;
                 while (reader.Read())
                 {
                     SecurityLoginsLogPoco poco = new SecurityLoginsLogPoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Login = Guid.Parse((string)reader["Login"]);
-                    poco.SourceIP = (string)reader["Password"];          
+                    poco.Login = reader.GetGuid(1);
+                    poco.SourceIP = (string)reader["Source_IP"];          
                     poco.LogonDate = reader.GetDateTime(3);
                     poco.IsSuccesful = reader.GetBoolean(4);
       
@@ -138,11 +138,11 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Security_Logins_Log]
-                                           SET [Id] = <Id, uniqueidentifier,>
-                                              ,[Login] = <Login, uniqueidentifier,>
-                                              ,[Source_IP] = <Source_IP, char(15),>
-                                              ,[Logon_Date] = <Logon_Date, datetime,>
-                                              ,[Is_Succesful] = <Is_Succesful, bit,>
+                                           SET [Id] = @Id
+                                              ,[Login] = @Login
+                                              ,[Source_IP] = @Source_IP
+                                              ,[Logon_Date] = @Logon_Date
+                                              ,[Is_Succesful] = @Is_Succesful
                                          WHERE [Id] = @Id";
 
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
@@ -153,7 +153,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

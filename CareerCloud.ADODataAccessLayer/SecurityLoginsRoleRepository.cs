@@ -37,9 +37,9 @@ namespace CareerCloud.ADODataAccessLayer
                                         ,[Login]
                                         ,[Role])
                                     VALUES
-                                        (Id, 
-                                        Login, 
-                                        Role)";
+                                        (@Id, 
+                                        @Login, 
+                                        @Role)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
                     comm.Parameters.AddWithValue("@Login", poco.Login);
                     comm.Parameters.AddWithValue("@Role", poco.Role);
@@ -124,9 +124,9 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Security_Logins_Roles]
-                                       SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Login] = <Login, uniqueidentifier,>
-                                          ,[Role] = <Role, uniqueidentifier,>
+                                       SET [Id] = @Id
+                                          ,[Login] = @Login
+                                          ,[Role] = @Role
                                      WHERE [Id] = @Id";
 
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
@@ -136,7 +136,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

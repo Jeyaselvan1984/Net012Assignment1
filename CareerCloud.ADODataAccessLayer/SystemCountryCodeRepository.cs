@@ -35,8 +35,8 @@ namespace CareerCloud.ADODataAccessLayer
                                         ([Code]
                                         ,[Name])
                                     VALUES
-                                        (Code, 
-                                         Name)";
+                                        (@Code, 
+                                         @Name)";
                     comm.Parameters.AddWithValue("@Code", poco.Code);
                     comm.Parameters.AddWithValue("@Name", poco.Name);
                 
@@ -119,15 +119,15 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[System_Country_Codes]
-                                           SET [Code] = <Code, char(10),>
-                                              ,[Name] = <Name, nvarchar(50),>
+                                           SET [Code] = @Code
+                                              ,[Name] = @Name
                                          WHERE [Code] = @Code";
                     cmd.Parameters.AddWithValue("@Code", poco.Code);
                     cmd.Parameters.AddWithValue("@Name", poco.Name);
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

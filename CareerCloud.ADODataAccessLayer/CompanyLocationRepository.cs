@@ -40,13 +40,13 @@ namespace CareerCloud.ADODataAccessLayer
                                        ,[City_Town]
                                        ,[Zip_Postal_Code])
                                  VALUES
-                                       (Id, 
-                                        Company, 
-                                        Country_Code,
-                                        State_Province_Code,
-                                        Street_Address,
-                                        City_Town,
-                                        Zip_Postal_Code)";
+                                       (@Id, 
+                                        @Company, 
+                                        @Country_Code,
+                                        @State_Province_Code,
+                                        @Street_Address,
+                                        @City_Town,
+                                        @Zip_Postal_Code)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
                     comm.Parameters.AddWithValue("@Company", poco.Company);
                     comm.Parameters.AddWithValue("@Country_Code", poco.CountryCode);
@@ -93,12 +93,18 @@ namespace CareerCloud.ADODataAccessLayer
                 {
                     CompanyLocationPoco poco = new CompanyLocationPoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Company = Guid.Parse((string)reader["Company"]);
+                    poco.Company = reader.GetGuid(1);
                     poco.CountryCode = (string)reader["Country_Code"];
                     poco.Province = (string)reader["State_Province_Code"];
                     poco.Street = (string)reader["Street_Address"];
-                    poco.City = (string)reader["City_Town"];
-                    poco.PostalCode = (string)reader["Zip_Postal_Code"];
+                    if (!reader.IsDBNull(5))
+                        poco.City = (string)reader["City_Town"];
+                    else
+                        poco.City = null;
+                    if (!reader.IsDBNull(6))
+                        poco.PostalCode = (string)reader["Zip_Postal_Code"];
+                    else
+                        poco.PostalCode = null;
                     poco.TimeStamp = (Byte[])reader[7];
                     pocos[index] = poco;
                     index++;
@@ -146,13 +152,13 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Company_Locations]
-                                       SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Company] = <Company, uniqueidentifier,>
-                                          ,[Country_Code] = <Country_Code, char(10),>
-                                          ,[State_Province_Code] = <State_Province_Code, char(10),>
-                                          ,[Street_Address] = <Street_Address, nvarchar(100),>
-                                          ,[City_Town] = <City_Town, nvarchar(100),>
-                                          ,[Zip_Postal_Code] = <Zip_Postal_Code, char(20),>
+                                       SET [Id] = @Id
+                                          ,[Company] = @Company
+                                          ,[Country_Code] = @Country_Code
+                                          ,[State_Province_Code] = @State_Province_Code
+                                          ,[Street_Address] = @Street_Address
+                                          ,[City_Town] = @City_Town
+                                          ,[Zip_Postal_Code] = @Zip_Postal_Code
                                      WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Company", poco.Company);
@@ -164,7 +170,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

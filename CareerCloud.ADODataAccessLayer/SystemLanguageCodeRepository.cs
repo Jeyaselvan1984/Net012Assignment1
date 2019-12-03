@@ -36,7 +36,9 @@ namespace CareerCloud.ADODataAccessLayer
                                        ,[Name]
                                        ,[Native_Name])
                                  VALUES
-                                       (LanguageID, Name, Native_Name)";
+                                       (@LanguageID, 
+                                        @Name, 
+                                        @Native_Name)";
                     comm.Parameters.AddWithValue("@LanguageID", poco.LanguageID);
                     comm.Parameters.AddWithValue("@Name", poco.Name);
                     comm.Parameters.AddWithValue("@Native_Name", poco.NativeName);
@@ -122,9 +124,9 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[System_Language_Codes]
-                                   SET [LanguageID] = <LanguageID, char(10),>
-                                      ,[Name] = <Name, nvarchar(50),>
-                                      ,[Native_Name] = <Native_Name, nvarchar(50),>
+                                   SET [LanguageID] = @LanguageId
+                                      ,[Name] = @Name
+                                      ,[Native_Name] = @Native_Name
                                  WHERE [LanguageID] = @LanguageId";
                     cmd.Parameters.AddWithValue("@LanguageId", poco.LanguageID);
                     cmd.Parameters.AddWithValue("@Name", poco.Name);
@@ -132,7 +134,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

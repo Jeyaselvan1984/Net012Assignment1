@@ -39,11 +39,11 @@ namespace CareerCloud.ADODataAccessLayer
                                        ,[Skill_Level]
                                        ,[Importance])
                                  VALUES
-                                       (Id, 
-                                        Job, 
-                                        Skill, 
-                                        Skill_Level,
-                                        Importance)";
+                                       (@Id, 
+                                        @Job, 
+                                        @Skill, 
+                                        @Skill_Level,
+                                        @Importance)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
                     comm.Parameters.AddWithValue("@Job", poco.Job);
                     comm.Parameters.AddWithValue("@Skill", poco.Skill);
@@ -81,13 +81,13 @@ namespace CareerCloud.ADODataAccessLayer
                               FROM [dbo].[Company_Job_Skills]";
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
-                CompanyJobSkillPoco[] pocos = new CompanyJobSkillPoco[500];
+                CompanyJobSkillPoco[] pocos = new CompanyJobSkillPoco[10000];
                 int index = 0;
                 while (reader.Read())
                 {
                     CompanyJobSkillPoco poco = new CompanyJobSkillPoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Job = Guid.Parse((string)reader["Job"]);
+                    poco.Job = reader.GetGuid(1);
                     poco.Skill = (string)reader["Skill"];
                     poco.SkillLevel = (string)reader["Skill_Level"];
                     poco.Importance = reader.GetInt32(4);
@@ -138,11 +138,11 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Company_Job_Skills]
-                                       SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Job] = <Job, uniqueidentifier,>
-                                          ,[Skill] = <Skill, nvarchar(100),>
-                                          ,[Skill_Level] = <Skill_Level, varchar(10),>
-                                          ,[Importance] = <Importance, int,>
+                                       SET [Id] = @Id
+                                          ,[Job] = @Job
+                                          ,[Skill] = @Skill
+                                          ,[Skill_Level] = @Skill_Level
+                                          ,[Importance] = @Importance
                                      WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Job", poco.Job);
@@ -152,7 +152,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }
