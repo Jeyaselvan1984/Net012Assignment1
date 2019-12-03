@@ -96,7 +96,7 @@ namespace CareerCloud.ADODataAccessLayer
                 {
                     ApplicantSkillPoco poco = new ApplicantSkillPoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Applicant = Guid.Parse((string)reader["Applicant"]);
+                    poco.Applicant = reader.GetGuid(1);
                     poco.Skill = (string)reader["Skill"];
                     poco.SkillLevel = (string)reader["Skill_Level"];
                     poco.StartMonth = reader.GetByte(4);
@@ -152,14 +152,14 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Applicant_Skills]
-                                   SET [Id] = <Id, uniqueidentifier,>
-                                      ,[Applicant] = <Applicant, uniqueidentifier,>
-                                      ,[Skill] = <Skill, nvarchar(100),>
-                                      ,[Skill_Level] = <Skill_Level, char(10),>
-                                      ,[Start_Month] = <Start_Month, tinyint,>
-                                      ,[Start_Year] = <Start_Year, int,>
-                                      ,[End_Month] = <End_Month, tinyint,>
-                                      ,[End_Year] = <End_Year, int,>
+                                   SET [Id] = Id
+                                      ,[Applicant] = Applicant
+                                      ,[Skill] = Skill
+                                      ,[Skill_Level] = Skill_Level
+                                      ,[Start_Month] = Start_Month
+                                      ,[Start_Year] = Start_Year
+                                      ,[End_Month] = End_Month
+                                      ,[End_Year] = End_Year
                                  WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Applicant", poco.Applicant);
@@ -172,7 +172,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

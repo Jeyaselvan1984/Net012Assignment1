@@ -38,11 +38,11 @@ namespace CareerCloud.ADODataAccessLayer
                                        ,[Company_Name]
                                        ,[Company_Description])
                                  VALUES
-                                       (Id, 
-                                        Company, 
-                                        LanguageID, 
-                                        Company_Name, 
-                                        Company_Description)";
+                                       (@Id, 
+                                        @Company, 
+                                        @LanguageID, 
+                                        @Company_Name, 
+                                        @Company_Description)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
                     comm.Parameters.AddWithValue("@Company", poco.Company);
                     comm.Parameters.AddWithValue("@LanguageID", poco.LanguageId);
@@ -79,13 +79,13 @@ namespace CareerCloud.ADODataAccessLayer
                               FROM [dbo].[Company_Descriptions]";
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
-                CompanyDescriptionPoco[] pocos = new CompanyDescriptionPoco[500];
+                CompanyDescriptionPoco[] pocos = new CompanyDescriptionPoco[1000];
                 int index = 0;
                 while (reader.Read())
                 {
                     CompanyDescriptionPoco poco = new CompanyDescriptionPoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Company = Guid.Parse((string)reader["Company"]);
+                    poco.Company = reader.GetGuid(1);
                     poco.LanguageId = (string)reader["LanguageID"];
                     poco.CompanyName = (string)reader["Company_Name"];
                     poco.CompanyDescription = (string)reader["Company_Description"];      
@@ -136,11 +136,11 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Company_Descriptions]
-                                   SET [Id] = <Id, uniqueidentifier,>
-                                      ,[Company] = <Company, uniqueidentifier,>
-                                      ,[LanguageID] = <LanguageID, char(10),>
-                                      ,[Company_Name] = <Company_Name, nvarchar(50),>
-                                      ,[Company_Description] = <Company_Description, nvarchar(1000),>
+                                   SET [Id] = @Id
+                                      ,[Company] = @Company
+                                      ,[LanguageID] = @LanguageID
+                                      ,[Company_Name] = @Company_Name
+                                      ,[Company_Description] = @Company_Description
                                  WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Company", poco.Company);
@@ -150,7 +150,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

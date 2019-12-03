@@ -45,17 +45,17 @@ namespace CareerCloud.ADODataAccessLayer
                                        ,[End_Month]
                                        ,[End_Year])
                                  VALUES
-                                       (Id, 
-                                        Applicant, 
-                                        Company_Name, 
-                                        Country_Code, 
-                                        Location, 
-                                        Job_Title,
-                                        Job_Description,
-                                        Start_Month, 
-                                        Start_Year, 
-                                        End_Month, 
-                                        End_Year)";
+                                       (@Id, 
+                                        @Applicant, 
+                                        @Company_Name, 
+                                        @Country_Code, 
+                                        @Location, 
+                                        @Job_Title,
+                                        @Job_Description,
+                                        @Start_Month, 
+                                        @Start_Year, 
+                                        @End_Month, 
+                                        @End_Year)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
                     comm.Parameters.AddWithValue("@Applicant", poco.Applicant);
                     comm.Parameters.AddWithValue("@Company_Name", poco.CompanyName);
@@ -109,7 +109,7 @@ namespace CareerCloud.ADODataAccessLayer
                 {
                     ApplicantWorkHistoryPoco poco = new ApplicantWorkHistoryPoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Applicant = Guid.Parse((string)reader["Applicant"]);
+                    poco.Applicant = reader.GetGuid(1);
                     poco.CompanyName = (string)reader["Company_Name"];
                     poco.CountryCode = (string)reader["Country_Code"];
                     poco.Location = (string)reader["Location"];
@@ -169,17 +169,17 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Applicant_Work_History]
-                                       SET [Id] = <Id, uniqueidentifier,>
-                                          ,[Applicant] = <Applicant, uniqueidentifier,>
-                                          ,[Company_Name] = <Company_Name, nvarchar(150),>
-                                          ,[Country_Code] = <Country_Code, char(10),>
-                                          ,[Location] = <Location, nvarchar(50),>
-                                          ,[Job_Title] = <Job_Title, nvarchar(50),>
-                                          ,[Job_Description] = <Job_Description, nvarchar(500),>
-                                          ,[Start_Month] = <Start_Month, smallint,>
-                                          ,[Start_Year] = <Start_Year, int,>
-                                          ,[End_Month] = <End_Month, smallint,>
-                                          ,[End_Year] = <End_Year, int,>
+                                       SET [Id] = @Id
+                                          ,[Applicant] = @Applicant
+                                          ,[Company_Name] = @Company_Name
+                                          ,[Country_Code] = @Country_Code
+                                          ,[Location] = @Location
+                                          ,[Job_Title] = @Job_Title
+                                          ,[Job_Description] = @Job_Description
+                                          ,[Start_Month] = @Start_Month
+                                          ,[Start_Year] = @Start_Year
+                                          ,[End_Month] = @End_Month
+                                          ,[End_Year] = @End_Year
                                      WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Applicant", poco.Applicant);
@@ -195,7 +195,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0)
                     {
                         throw new Exception();
                     }

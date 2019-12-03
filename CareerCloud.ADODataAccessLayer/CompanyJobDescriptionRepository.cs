@@ -37,10 +37,10 @@ namespace CareerCloud.ADODataAccessLayer
                                            ,[Job_Name]
                                            ,[Job_Descriptions])
                                      VALUES
-                                           (Id, 
-                                            Job, 
-                                            Job_Name, 
-                                            Job_Descriptions)";
+                                           (@Id, 
+                                            @Job, 
+                                            @Job_Name, 
+                                            @Job_Description)";
                     comm.Parameters.AddWithValue("@Id", poco.Id);
                     comm.Parameters.AddWithValue("@Job", poco.Job);
                     comm.Parameters.AddWithValue("@Job_Name", poco.JobName);
@@ -76,13 +76,13 @@ namespace CareerCloud.ADODataAccessLayer
                               FROM [dbo].[Company_Jobs_Descriptions]";
                 conn.Open();
                 SqlDataReader reader = cmd.ExecuteReader();
-                CompanyJobDescriptionPoco[] pocos = new CompanyJobDescriptionPoco[500];
+                CompanyJobDescriptionPoco[] pocos = new CompanyJobDescriptionPoco[2000];
                 int index = 0;
                 while (reader.Read())
                 {
                     CompanyJobDescriptionPoco poco = new CompanyJobDescriptionPoco();
                     poco.Id = reader.GetGuid(0);
-                    poco.Job = Guid.Parse((string)reader["Job"]);
+                    poco.Job = reader.GetGuid(1);
                     poco.JobName = (string)reader["Job_Name"];
                     poco.JobDescriptions = (string)reader["Job_Descriptions"];
       
@@ -133,10 +133,10 @@ namespace CareerCloud.ADODataAccessLayer
                 foreach (var poco in items)
                 {
                     cmd.CommandText = @"UPDATE [dbo].[Company_Jobs_Descriptions]
-                                   SET [Id] = <Id, uniqueidentifier,>
-                                      ,[Job] = <Job, uniqueidentifier,>
-                                      ,[Job_Name] = <Job_Name, nvarchar(100),>
-                                      ,[Job_Descriptions] = <Job_Descriptions, nvarchar(1000),>
+                                   SET [Id] = @Id
+                                      ,[Job] = @Job
+                                      ,[Job_Name] = @Job_Name
+                                      ,[Job_Descriptions] = @Job_Description
                                  WHERE [Id] = @Id";
                     cmd.Parameters.AddWithValue("@Id", poco.Id);
                     cmd.Parameters.AddWithValue("@Job", poco.Job);
@@ -145,7 +145,7 @@ namespace CareerCloud.ADODataAccessLayer
 
                     connection.Open();
                     int count = cmd.ExecuteNonQuery();
-                    if (count != -1)
+                    if (count <= 0 )
                     {
                         throw new Exception();
                     }
