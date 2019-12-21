@@ -14,9 +14,34 @@ namespace CareerCloud.BusinessLogicLayer
             _repository = repository;
         }
 
-        protected virtual void Verify(SystemLanguageCodePoco[] pocos)
+        protected  void Verify(SystemLanguageCodePoco[] pocos)
         {
-            return;
+            List<ValidationException> exceptions = new List<ValidationException>();
+            //base.Verify(pocos);
+            foreach (SystemLanguageCodePoco poco in pocos)
+            {
+                if (string.IsNullOrEmpty(poco.LanguageID))
+                {
+                    exceptions.Add(new ValidationException(1000, "LanguageID cannot be empty"));
+                }
+
+                    if (string.IsNullOrEmpty(poco.Name))
+                {
+                    exceptions.Add(new ValidationException(1001, "Code cannot be empty"));
+
+                }
+               
+                
+                if (string.IsNullOrEmpty(poco.NativeName))
+                {
+                    exceptions.Add(new ValidationException(1002, "NativeName cannot be empty"));
+
+                }
+            }
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
+            }
         }
 
         public virtual SystemLanguageCodePoco Get(string langId)
@@ -27,19 +52,25 @@ namespace CareerCloud.BusinessLogicLayer
 
         public virtual void Add(SystemLanguageCodePoco[] pocos)
         {
-           
 
+            Verify(pocos);
             _repository.Add(pocos);
         }
 
         public virtual void Update(SystemLanguageCodePoco[] pocos)
         {
+            Verify(pocos);
             _repository.Update(pocos);
         }
 
         public void Delete(SystemLanguageCodePoco[] pocos)
         {
             _repository.Remove(pocos);
+        }
+
+        public IList<SystemLanguageCodePoco> GetAll()
+        {
+            return _repository.GetAll();
         }
     }
 }
