@@ -11,5 +11,36 @@ namespace CareerCloud.BusinessLogicLayer
         public ApplicantResumeLogic(IDataRepository<ApplicantResumePoco> repository) : base(repository)
         {
         }
+        protected override void Verify(ApplicantResumePoco[] pocos)
+        {
+            List<ValidationException> exceptions = new List<ValidationException>();
+            //base.Verify(pocos);
+            foreach (ApplicantResumePoco poco in pocos)
+            {
+
+                if (poco.Resume.Length == 0)
+                {
+                    exceptions.Add(new ValidationException(113, "Resume cannot be empty"));
+                }
+             
+            }
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
+            }
+
+        }
+        public override void Add(ApplicantResumePoco[] pocos)
+        {
+            Verify(pocos);
+            base.Add(pocos);
+        }
+
+        public override void Update(ApplicantResumePoco[] pocos)
+        {
+            Verify(pocos);
+            base.Update(pocos);
+
+        }
     }
 }

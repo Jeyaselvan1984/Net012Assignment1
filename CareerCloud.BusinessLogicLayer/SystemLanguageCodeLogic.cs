@@ -44,20 +44,20 @@ namespace CareerCloud.BusinessLogicLayer
             }
         }
 
-        public virtual SystemLanguageCodePoco Get(string langId)
+        public  SystemLanguageCodePoco Get(string langId)
         {
             return _repository.GetSingle(c => c.LanguageID == langId);
         }
 
 
-        public virtual void Add(SystemLanguageCodePoco[] pocos)
+        public  void Add(SystemLanguageCodePoco[] pocos)
         {
 
             Verify(pocos);
             _repository.Add(pocos);
         }
 
-        public virtual void Update(SystemLanguageCodePoco[] pocos)
+        public  void Update(SystemLanguageCodePoco[] pocos)
         {
             Verify(pocos);
             _repository.Update(pocos);

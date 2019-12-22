@@ -37,20 +37,20 @@ namespace CareerCloud.BusinessLogicLayer
             }
         }
 
-        public virtual SystemCountryCodePoco Get(string Code)
+        public SystemCountryCodePoco Get(string Code)
         {
             return _repository.GetSingle(c => c.Code == Code);
         }
 
 
-        public virtual void Add(SystemCountryCodePoco[] pocos)
+        public void Add(SystemCountryCodePoco[] pocos)
         {
 
             Verify(pocos);
             _repository.Add(pocos);
         }
 
-        public virtual void Update(SystemCountryCodePoco[] pocos)
+        public void Update(SystemCountryCodePoco[] pocos)
         {
             Verify(pocos);
             _repository.Update(pocos);
