@@ -17,16 +17,30 @@ namespace CareerCloud.BusinessLogicLayer
             //base.Verify(pocos);
             foreach (CompanyDescriptionPoco poco in pocos)
             {
-                
-                if ((!string.IsNullOrEmpty(poco.CompanyName)) && poco.CompanyName.Length < 3)
+
+                if (string.IsNullOrEmpty(poco.CompanyName))
                 {
                     exceptions.Add(new ValidationException(106, "Company name must have greater than 2 characters"));
                 }
-                if ((!string.IsNullOrEmpty(poco.CompanyDescription)) && poco.CompanyDescription.Length < 3)
+                else 
+                { 
+                    if (poco.CompanyName.Length < 3)
+                    {
+                        exceptions.Add(new ValidationException(106, "Company name must have greater than 2 characters"));
+                    }
+                }
+                if (string.IsNullOrEmpty(poco.CompanyDescription))
                 {
                     exceptions.Add(new ValidationException(107, "Company Description must have greater than 2 characters"));
-                }
 
+                }
+                else
+                {
+                    if (poco.CompanyDescription.Length < 3)
+                    {
+                        exceptions.Add(new ValidationException(107, "Company Description must have greater than 2 characters"));
+                    }
+                }
 
 
             }
