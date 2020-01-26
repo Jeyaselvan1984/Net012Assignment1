@@ -32,6 +32,28 @@ namespace CareerCloud.EntityFrameworkDataAccess
         public DbSet<SystemLanguageCodePoco> systemLanguageCodes { get; set; }
 
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ApplicantEducationPoco>
+            (entity =>
+            {
+                //entity.ToTable("Applicant_Educations");
+                //entity.Property(_ => _.StartDate.HasColumnName("Start_Date").HasColumnType("date");
+                //For single column primary key
+                entity.HasKey(e => e.Id);
+    //MultiColumn Composite key
+    entity.HasKey(e => new { e.Id, e.Major });
+                entity.HasOne(e => e.ApplicantProfiles)
+    .WithMany(p => p.ApplicantEducation)
+    .HasForeignKey(e => e.Applicant);
+                entity.Property(e => e.TimeStamp).IsRowVersion();
+    //Alternatively in Poco class use //[NotMapped]
+});
+            
+base.OnModelCreating(modelBuilder);
+        }
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var config = new ConfigurationBuilder();
