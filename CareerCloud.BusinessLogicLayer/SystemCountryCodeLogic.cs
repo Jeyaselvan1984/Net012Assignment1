@@ -2,6 +2,7 @@
 using CareerCloud.Pocos;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CareerCloud.BusinessLogicLayer
@@ -61,9 +62,9 @@ namespace CareerCloud.BusinessLogicLayer
             _repository.Remove(pocos);
         }
 
-        public  IList<SystemCountryCodePoco> GetAll()
+        public  List<SystemCountryCodePoco> GetAll()
         {
-            return _repository.GetAll();
+            return _repository.GetAll().ToList();
         }
     }
 }
