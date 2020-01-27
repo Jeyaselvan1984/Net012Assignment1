@@ -12,5 +12,6 @@ namespace CareerCloud.Pocos
         [Key]
         public string Code { get; set; }  
         public string Name { get; set; }
+        public ApplicantProfilePoco ApplicantProfile { get; set; }
     }
 }

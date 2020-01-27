@@ -1,4 +1,5 @@
 ﻿using CareerCloud.DataAccessLayer;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace CareerCloud.EntityFrameworkDataAccess
 {
-    class EFGenericRepository<T> : IDataRepository<T> where T : class
+    public class EFGenericRepository<T> : IDataRepository<T> where T : class
     {
         private CareerCloudContext _context;
         public EFGenericRepository()
@@ -31,9 +32,9 @@ namespace CareerCloud.EntityFrameworkDataAccess
         public IList<T> GetAll(params Expression<Func<T, object>>[] navigationProperties)
         {
             IQueryable<T> dbQuery = _context.Set<T>();
-            foreach (
-                Expression<Func<T, object>> property in navigationProperties)
+            foreach ( Expression<Func<T, object>> property in navigationProperties)
             {
+        
                 dbQuery = dbQuery.Include<T,object>(property);
             }
             return dbQuery.ToList();
@@ -47,6 +48,7 @@ namespace CareerCloud.EntityFrameworkDataAccess
                 Expression<Func<T, object>> property in navigationProperties)
             {
                 dbQuery = dbQuery.Include<T,object>(property);
+               
             }
             return dbQuery.Where(where).ToList<T>();
         }

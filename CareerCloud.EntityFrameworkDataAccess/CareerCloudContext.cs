@@ -49,8 +49,29 @@ namespace CareerCloud.EntityFrameworkDataAccess
                 entity.Property(e => e.TimeStamp).IsRowVersion();
     //Alternatively in Poco class use //[NotMapped]
 });
-            
-base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<ApplicantProfilePoco>
+           (entity =>
+           {
+               //entity.ToTable("Applicant_Educations");
+               //entity.Property(_ => _.StartDate.HasColumnName("Start_Date").HasColumnType("date");
+               //For single column primary key
+               entity.HasKey(e => e.Id);
+               //MultiColumn Composite key
+               // entity.HasKey(e => new { e.Id, e.Major });
+               entity.HasMany(e => e.ApplicantEducation)
+                .WithOne(p => p.ApplicantProfiles);
+
+               entity.HasOne(e => e.SystemCountryCode)
+               .WithOne(p => p.ApplicantProfile);
+               
+              // entity.HasForeignKey(e => new { e.Country_Code, e.Login});
+
+     
+               entity.Property(e => e.TimeStamp).IsRowVersion();
+                //Alternatively in Poco class use //[NotMapped]
+            });
+
+            base.OnModelCreating(modelBuilder);
         }
 
 
