@@ -62,15 +62,78 @@ namespace CareerCloud.EntityFrameworkDataAccess
                 .WithOne(p => p.ApplicantProfiles);
 
                entity.HasOne(e => e.SystemCountryCode)
-               .WithOne(p => p.ApplicantProfile);
-               
-              // entity.HasForeignKey(e => new { e.Country_Code, e.Login});
+               .WithMany(p => p.ApplicantProfile).HasForeignKey(e => new { e.Id, e.Login});
 
      
                entity.Property(e => e.TimeStamp).IsRowVersion();
                 //Alternatively in Poco class use //[NotMapped]
             });
 
+            modelBuilder.Entity<ApplicantJobApplicationPoco>
+         (entity =>
+         {
+         
+               entity.HasKey(e => e.Id);
+
+               entity.HasOne(e => e.CompanyJob)
+              .WithMany(p => p.ApplicantJobApplication).HasForeignKey(e=>new { e.Job, e.Applicant });
+
+             entity.HasOne(e => e.ApplicantProfile)
+             .WithMany(p => p.ApplicantJobApplication);
+
+
+             entity.Property(e => e.TimeStamp).IsRowVersion();
+  
+           });
+
+
+            modelBuilder.Entity<ApplicantResumePoco>
+         (entity =>
+         {
+
+             entity.HasKey(e => e.Id);
+             
+
+             entity.HasOne(e =>e.ApplicantProfile)
+            .WithMany(f => f.ApplicantResume).HasForeignKey(e=>e.Applicant);
+
+       
+          
+
+
+         });
+
+            modelBuilder.Entity<ApplicantSkillPoco>
+      (entity =>
+      {
+
+          entity.HasKey(e => e.Id);
+
+
+          entity.HasOne(e => e.ApplicantProfile)
+         .WithMany(f => f.ApplicantSkill).HasForeignKey(e => e.Applicant);
+
+
+
+
+
+      });
+
+            modelBuilder.Entity<ApplicantWorkHistoryPoco>
+(entity =>
+{
+
+    entity.HasKey(e => e.Id);
+
+
+    entity.HasOne(e => e.ApplicantProfile)
+   .WithMany(f => f.ApplicantWorkHistory).HasForeignKey(e=>new { e.CountryCode, e.Applicant });
+
+
+
+
+
+});
             base.OnModelCreating(modelBuilder);
         }
 
