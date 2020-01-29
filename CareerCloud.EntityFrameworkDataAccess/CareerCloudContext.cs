@@ -119,21 +119,48 @@ namespace CareerCloud.EntityFrameworkDataAccess
 
       });
 
-            modelBuilder.Entity<ApplicantWorkHistoryPoco>
+       modelBuilder.Entity<ApplicantWorkHistoryPoco>
+        (entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.ApplicantProfile)
+            .WithMany(f => f.ApplicantWorkHistory).HasForeignKey(e=>new { e.CountryCode, e.Applicant });
+
+            entity.HasOne(e => e.SystemCountryCode).WithMany(f => f.ApplicantWorkHistory);
+        });
+
+            modelBuilder.Entity<CompanyJobPoco>
+     (entity =>
+     {
+         entity.HasKey(e => e.Id);
+         entity.HasOne(e => e.CompanyProfile)
+         .WithMany(f => f.CompanyJob).HasForeignKey(f => f.Company );
+
+     
+     });
+
+            modelBuilder.Entity<CompanyDescriptionPoco>
 (entity =>
 {
-
     entity.HasKey(e => e.Id);
+    entity.HasOne(e => e.CompanyProfile)
+    .WithMany(f => f.CompanyDescription).HasForeignKey(f => new { f.Company, f.LanguageId });
 
+    entity.HasOne(e => e.SystemLanguageCode)
+    .WithMany(f => f.CompanyDescription);
 
-    entity.HasOne(e => e.ApplicantProfile)
-   .WithMany(f => f.ApplicantWorkHistory).HasForeignKey(e=>new { e.CountryCode, e.Applicant });
-
-
+});
+            modelBuilder.Entity<CompanyLocationPoco>
+(entity =>
+{
+    entity.HasKey(e => e.Id);
+    entity.HasOne(e => e.CompanyProfile)
+    .WithMany(f => f.CompanyLocation).HasForeignKey(f => f.Company );
 
 
 
 });
+
             base.OnModelCreating(modelBuilder);
         }
 
