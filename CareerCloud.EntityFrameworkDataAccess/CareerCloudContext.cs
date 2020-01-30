@@ -59,10 +59,10 @@ namespace CareerCloud.EntityFrameworkDataAccess
                //MultiColumn Composite key
                // entity.HasKey(e => new { e.Id, e.Major });
                entity.HasMany(e => e.ApplicantEducation)
-                .WithOne(p => p.ApplicantProfiles);
+                .WithOne(p => p.ApplicantProfiles).HasForeignKey(e => e.Applicant);
 
                entity.HasOne(e => e.SystemCountryCode)
-               .WithMany(p => p.ApplicantProfile).HasForeignKey(e => new { e.Id, e.Login});
+               .WithMany(p => p.ApplicantProfile).HasForeignKey(e => e.Country);
 
      
                entity.Property(e => e.TimeStamp).IsRowVersion();
@@ -76,10 +76,10 @@ namespace CareerCloud.EntityFrameworkDataAccess
                entity.HasKey(e => e.Id);
 
                entity.HasOne(e => e.CompanyJob)
-              .WithMany(p => p.ApplicantJobApplication).HasForeignKey(e=>new { e.Job, e.Applicant });
+              .WithMany(p => p.ApplicantJobApplication).HasForeignKey(e=> e.Job);
 
              entity.HasOne(e => e.ApplicantProfile)
-             .WithMany(p => p.ApplicantJobApplication);
+             .WithMany(p => p.ApplicantJobApplication).HasForeignKey(p=>p.Applicant);
 
 
              entity.Property(e => e.TimeStamp).IsRowVersion();
@@ -124,9 +124,10 @@ namespace CareerCloud.EntityFrameworkDataAccess
         {
             entity.HasKey(e => e.Id);
             entity.HasOne(e => e.ApplicantProfile)
-            .WithMany(f => f.ApplicantWorkHistory).HasForeignKey(e=>new { e.CountryCode, e.Applicant });
+            .WithMany(f => f.ApplicantWorkHistory).HasForeignKey(f=> f.Applicant );
 
-            entity.HasOne(e => e.SystemCountryCode).WithMany(f => f.ApplicantWorkHistory);
+            entity.HasOne(e => e.SystemCountryCode).
+            WithMany(f => f.ApplicantWorkHistory).HasForeignKey(f => f.CountryCode);
         });
 
             modelBuilder.Entity<CompanyJobPoco>
@@ -142,12 +143,12 @@ namespace CareerCloud.EntityFrameworkDataAccess
             modelBuilder.Entity<CompanyDescriptionPoco>
 (entity =>
 {
-    entity.HasKey(e => e.Id);
-    entity.HasOne(e => e.CompanyProfile)
-    .WithMany(f => f.CompanyDescription).HasForeignKey(f => new { f.Company, f.LanguageId });
+entity.HasKey(e => e.Id);
+entity.HasOne(e => e.CompanyProfile)
+.WithMany(f => f.CompanyDescription).HasForeignKey(f => f.Company);
 
-    entity.HasOne(e => e.SystemLanguageCode)
-    .WithMany(f => f.CompanyDescription);
+entity.HasOne(e => e.SystemLanguageCode)
+.WithMany(f => f.CompanyDescription).HasForeignKey(f => f.LanguageId);
 
 });
             modelBuilder.Entity<CompanyLocationPoco>
