@@ -52,12 +52,6 @@ namespace CareerCloud.EntityFrameworkDataAccess
             modelBuilder.Entity<ApplicantProfilePoco>
            (entity =>
            {
-               //entity.ToTable("Applicant_Educations");
-               //entity.Property(_ => _.StartDate.HasColumnName("Start_Date").HasColumnType("date");
-               //For single column primary key
-               entity.HasKey(e => e.Id);
-               //MultiColumn Composite key
-               // entity.HasKey(e => new { e.Id, e.Major });
                entity.HasMany(e => e.ApplicantEducation)
                 .WithOne(p => p.ApplicantProfiles).HasForeignKey(e => e.Applicant);
 
@@ -90,32 +84,19 @@ namespace CareerCloud.EntityFrameworkDataAccess
             modelBuilder.Entity<ApplicantResumePoco>
          (entity =>
          {
-
              entity.HasKey(e => e.Id);
-             
-
-             entity.HasOne(e =>e.ApplicantProfile)
-            .WithMany(f => f.ApplicantResume).HasForeignKey(e=>e.Applicant);
-
-       
-          
-
+             entity.HasOne(e => e.ApplicantProfile)
+            .WithMany(f => f.ApplicantResume).HasForeignKey(e => e.Applicant);        
 
          });
 
             modelBuilder.Entity<ApplicantSkillPoco>
       (entity =>
       {
-
           entity.HasKey(e => e.Id);
-
-
           entity.HasOne(e => e.ApplicantProfile)
          .WithMany(f => f.ApplicantSkill).HasForeignKey(e => e.Applicant);
-
-
-
-
+          entity.Property(e => e.TimeStamp).IsRowVersion();
 
       });
 
@@ -125,9 +106,10 @@ namespace CareerCloud.EntityFrameworkDataAccess
             entity.HasKey(e => e.Id);
             entity.HasOne(e => e.ApplicantProfile)
             .WithMany(f => f.ApplicantWorkHistory).HasForeignKey(f=> f.Applicant );
-
             entity.HasOne(e => e.SystemCountryCode).
             WithMany(f => f.ApplicantWorkHistory).HasForeignKey(f => f.CountryCode);
+            entity.Property(e => e.TimeStamp).IsRowVersion();
+
         });
 
             modelBuilder.Entity<CompanyJobPoco>
@@ -137,10 +119,21 @@ namespace CareerCloud.EntityFrameworkDataAccess
          entity.HasOne(e => e.CompanyProfile)
          .WithMany(f => f.CompanyJob).HasForeignKey(f => f.Company );
 
-     
+         entity.HasMany(e => e.CompanyJobEducation).WithOne(f =>f.CompanyJob );
+
+         entity.HasMany(e => e.CompanyJobDescription).WithOne(f => f.CompanyJob);
+         entity.Property(e => e.TimeStamp).IsRowVersion();
+
      });
 
-            modelBuilder.Entity<CompanyDescriptionPoco>
+            modelBuilder.Entity<CompanyProfilePoco>
+(entity =>
+{
+    entity.HasMany(e => e.CompanyJob).WithOne(f => f.CompanyProfile);
+    entity.Property(e => e.TimeStamp).IsRowVersion();
+});
+
+ modelBuilder.Entity<CompanyDescriptionPoco>
 (entity =>
 {
 entity.HasKey(e => e.Id);
@@ -149,6 +142,7 @@ entity.HasOne(e => e.CompanyProfile)
 
 entity.HasOne(e => e.SystemLanguageCode)
 .WithMany(f => f.CompanyDescription).HasForeignKey(f => f.LanguageId);
+    entity.Property(e => e.TimeStamp).IsRowVersion();
 
 });
             modelBuilder.Entity<CompanyLocationPoco>
@@ -158,10 +152,10 @@ entity.HasOne(e => e.SystemLanguageCode)
     entity.HasOne(e => e.CompanyProfile)
     .WithMany(f => f.CompanyLocation).HasForeignKey(f => f.Company );
 
-
+    entity.Property(e => e.TimeStamp).IsRowVersion();
 
 });
-
+        
             base.OnModelCreating(modelBuilder);
         }
 
