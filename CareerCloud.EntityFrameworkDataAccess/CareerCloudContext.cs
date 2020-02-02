@@ -68,7 +68,7 @@ namespace CareerCloud.EntityFrameworkDataAccess
          (entity =>
          {
          
-               entity.HasKey(e => e.Id);
+               //entity.HasKey(e => e.Id);
 
                entity.HasOne(e => e.CompanyJob)
               .WithMany(p => p.ApplicantJobApplication).HasForeignKey(e=> e.Job);
