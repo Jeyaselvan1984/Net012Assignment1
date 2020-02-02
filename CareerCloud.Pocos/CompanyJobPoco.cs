@@ -24,5 +24,6 @@ namespace CareerCloud.Pocos
         public CompanyProfilePoco CompanyProfile { get; set; }
         public virtual ICollection<CompanyJobEducationPoco> CompanyJobEducation { get; set; }
         public virtual ICollection<CompanyJobDescriptionPoco> CompanyJobDescription { get; set; }
+        public virtual ICollection<CompanyJobSkillPoco> CompanyJobSkill { get; set; }
     }
 }

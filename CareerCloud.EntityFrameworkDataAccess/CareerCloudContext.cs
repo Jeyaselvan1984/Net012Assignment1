@@ -42,7 +42,7 @@ namespace CareerCloud.EntityFrameworkDataAccess
                 //For single column primary key
                 entity.HasKey(e => e.Id);
     //MultiColumn Composite key
-    entity.HasKey(e => new { e.Id, e.Major });
+  //  entity.HasKey(e => new { e.Id, e.Major });
                 entity.HasOne(e => e.ApplicantProfiles)
     .WithMany(p => p.ApplicantEducation)
     .HasForeignKey(e => e.Applicant);
@@ -52,11 +52,12 @@ namespace CareerCloud.EntityFrameworkDataAccess
             modelBuilder.Entity<ApplicantProfilePoco>
            (entity =>
            {
-               entity.HasMany(e => e.ApplicantEducation)
-                .WithOne(p => p.ApplicantProfiles).HasForeignKey(e => e.Applicant);
+               //entity.HasMany(e => e.ApplicantEducation)
+               // .WithOne(p => p.ApplicantProfiles).HasForeignKey(e => e.Applicant);
+
 
                entity.HasOne(e => e.SystemCountryCode)
-               .WithMany(p => p.ApplicantProfile).HasForeignKey(e => e.Country);
+              .WithMany(p => p.ApplicantProfile).HasForeignKey(e => e.Country);
 
      
                entity.Property(e => e.TimeStamp).IsRowVersion();
@@ -112,6 +113,22 @@ namespace CareerCloud.EntityFrameworkDataAccess
 
         });
 
+            modelBuilder.Entity<CompanyJobDescriptionPoco>
+(entity =>
+{
+   entity.Property(e => e.TimeStamp).IsRowVersion();
+});
+            modelBuilder.Entity<CompanyJobEducationPoco>
+(entity =>
+{
+   entity.Property(e => e.TimeStamp).IsRowVersion();
+});
+            modelBuilder.Entity<CompanyJobSkillPoco>
+(entity =>
+{
+entity.Property(e => e.TimeStamp).IsRowVersion();
+});
+
             modelBuilder.Entity<CompanyJobPoco>
      (entity =>
      {
@@ -119,14 +136,21 @@ namespace CareerCloud.EntityFrameworkDataAccess
          entity.HasOne(e => e.CompanyProfile)
          .WithMany(f => f.CompanyJob).HasForeignKey(f => f.Company );
 
-         entity.HasMany(e => e.CompanyJobEducation).WithOne(f =>f.CompanyJob );
+         entity.HasMany(e => e.CompanyJobEducation).WithOne(f =>f.CompanyJob ).HasForeignKey(f=>f.Job);
 
-         entity.HasMany(e => e.CompanyJobDescription).WithOne(f => f.CompanyJob);
+         entity.HasMany(e => e.CompanyJobDescription).WithOne(f => f.CompanyJob).HasForeignKey(f=>f.Job);
          entity.Property(e => e.TimeStamp).IsRowVersion();
+
+         entity.HasMany(e => e.CompanyJobSkill).WithOne(f => f.CompanyJob).HasForeignKey(f => f.Job);
 
      });
 
-            modelBuilder.Entity<CompanyProfilePoco>
+            modelBuilder.Entity<CompanyJobDescriptionPoco>
+    (entity =>
+    {
+        entity.Property(e => e.TimeStamp).IsRowVersion();
+    });
+        modelBuilder.Entity<CompanyProfilePoco>
 (entity =>
 {
     entity.HasMany(e => e.CompanyJob).WithOne(f => f.CompanyProfile);
@@ -155,7 +179,33 @@ entity.HasOne(e => e.SystemLanguageCode)
     entity.Property(e => e.TimeStamp).IsRowVersion();
 
 });
-        
+
+            modelBuilder.Entity<SecurityLoginPoco>
+(entity =>
+{
+   entity.HasKey(e => e.Id);
+   entity.HasMany (e => e.ApplicantProfile)
+   .WithOne(f => f.SecurityLogin).HasForeignKey(f => f.Login);
+
+    entity.HasMany(e => e.SecurityLoginsLog)
+    .WithOne(f => f.SecurityLogin).HasForeignKey(f => f.Login);
+    entity.HasMany(e => e.SecurityLoginsRole)
+    .WithOne(f => f.SecurityLogin).HasForeignKey(f => f.Login);
+
+   entity.Property(e => e.TimeStamp).IsRowVersion();
+
+});
+            modelBuilder.Entity<SecurityLoginsRolePoco>
+           (entity =>
+           {
+               entity.HasOne(e => e.SecurityRole)
+               .WithMany(f => f.SecurityLoginsRole).HasForeignKey(e => e.Role);
+              
+               entity.Property(e => e.TimeStamp).IsRowVersion();
+
+           });
+
+
             base.OnModelCreating(modelBuilder);
         }
 

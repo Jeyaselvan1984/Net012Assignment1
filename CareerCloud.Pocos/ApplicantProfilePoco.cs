@@ -36,5 +36,6 @@ namespace CareerCloud.Pocos
         public virtual ICollection<ApplicantResumePoco> ApplicantResume { get; set; }
         public virtual ICollection<ApplicantSkillPoco> ApplicantSkill { get; set; }
         public virtual ICollection<ApplicantWorkHistoryPoco> ApplicantWorkHistory { get; set; }
+      
     }
 }
