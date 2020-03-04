@@ -38,13 +38,48 @@ namespace CareerCloud.WebAPI.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("education")]
+        public ActionResult GetAllApplicantEducation()
+        {
+            var applicants = _logic.GetAll();
+            if ( applicants == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(applicants);
+            }
+        }
+
         [HttpPost]
-        [Route("Education")]
+        [Route("education")]
         public ActionResult PostApplicantEducation(
             [FromBody]ApplicantEducationPoco[] appEduPocos)
         {
             _logic.Add(appEduPocos);
             return Ok();
         }
+
+        [HttpPut]
+        [Route("education")]
+        public ActionResult PutApplicantEducation(
+            [FromBody]ApplicantEducationPoco[] pocos)
+        {
+            _logic.Update(pocos);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("education")]
+        public ActionResult DeleteApplicantEducation(
+            [FromBody]ApplicantEducationPoco[] pocos)
+        {
+            _logic.Delete(pocos);
+            return Ok();
+        }
+
+        
     }
 }
