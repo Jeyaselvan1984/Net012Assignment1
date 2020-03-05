@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CareerCloud.WebAPI.Controllers
-[
-    Route("api/careercloud/security/v1")]
+{
+
+    [Route("api/careercloud/security/v1")]
     [ApiController]
     public class SecurityLoginsRoleController : ControllerBase
     {
@@ -53,7 +54,7 @@ namespace CareerCloud.WebAPI.Controllers
 
         [HttpPost]
         [Route("securityloginsrole")]
-        public ActionResult PostSecurityLoginsRole(
+        public ActionResult PostSecurityLoginRole(
             [FromBody]SecurityLoginsRolePoco[] securityloginsrolepoco)
         {
             _logic.Add(securityloginsrolepoco);
@@ -71,7 +72,7 @@ namespace CareerCloud.WebAPI.Controllers
 
         [HttpDelete]
         [Route("securityloginsrole")]
-        public ActionResult DeleteSecurityLoginsRole(
+        public ActionResult DeleteSecurityLoginRole(
             [FromBody]SecurityLoginsRolePoco[] pocos)
         {
             _logic.Delete(pocos);
