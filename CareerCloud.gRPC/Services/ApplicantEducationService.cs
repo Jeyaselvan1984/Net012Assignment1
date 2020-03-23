@@ -21,6 +21,63 @@ namespace CareerCloud.gRPC.Services
         {            
             _logic = new ApplicantEducationLogic(new EFGenericRepository<ApplicantEducationPoco>());
         }
+
+        public override Task<Empty> CreateApplicantEducation(ApplicantEducationPayload request, ServerCallContext context)
+        {
+            ApplicantEducationPoco[] pocos = new ApplicantEducationPoco[1];
+
+            pocos[0].Id = Guid.Parse(request.Id);
+            pocos[0].Applicant = Guid.Parse(request.Applicant);
+            pocos[0].CertificateDiploma = request.CertificateDiploma;
+            pocos[0].Major = request.Major;
+            pocos[0].CompletionPercent = Byte.Parse(request.CompletionPercent.ToString());
+            pocos[0].CompletionDate = request.CompletionDate.ToDateTime();
+            pocos[0].StartDate = request.StartDate.ToDateTime();
+            
+            
+            _logic.Add(pocos);
+            return new Task<Empty>(null);
+            
+
+        }
+
+        public override Task<Empty> DeleteApplicantEducation(ApplicantEducationPayload request, ServerCallContext context)
+        {
+            ApplicantEducationPoco[] pocos = new ApplicantEducationPoco[1];
+
+            pocos[0].Id = Guid.Parse(request.Id);
+            pocos[0].Applicant = Guid.Parse(request.Applicant);
+            pocos[0].CertificateDiploma = request.CertificateDiploma;
+            pocos[0].Major = request.Major;
+            pocos[0].CompletionPercent = Byte.Parse(request.CompletionPercent.ToString());
+            pocos[0].CompletionDate = request.CompletionDate.ToDateTime();
+            pocos[0].StartDate = request.StartDate.ToDateTime();
+
+
+            _logic.Delete(pocos);
+
+            return new Task<Empty>(null);
+
+        }
+
+        public override Task<Empty> UpdateApplicantEducation(ApplicantEducationPayload request, ServerCallContext context)
+        {
+            ApplicantEducationPoco[] pocos = new ApplicantEducationPoco[1];
+
+            pocos[0].Id = Guid.Parse(request.Id);
+            pocos[0].Applicant = Guid.Parse(request.Applicant);
+            pocos[0].CertificateDiploma = request.CertificateDiploma;
+            pocos[0].Major = request.Major;
+            pocos[0].CompletionPercent = Byte.Parse(request.CompletionPercent.ToString());
+            pocos[0].CompletionDate = request.CompletionDate.ToDateTime();
+            pocos[0].StartDate = request.StartDate.ToDateTime();
+
+
+            _logic.Update(pocos);
+
+            return new Task<Empty>(null);
+
+        }
         public override Task<ApplicantEducationPayload> ReadApplicantEducation(IdRequest request, ServerCallContext context)
         {
         ApplicantEducationPoco poco = _logic.Get(Guid.Parse(request.Id));
