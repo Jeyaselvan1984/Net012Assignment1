@@ -23,14 +23,17 @@ namespace CareerCloud.gRPC.Services
         {
             ApplicantProfilePoco[] pocos = new ApplicantProfilePoco[1];
 
-            //pocos[0].Id = Guid.Parse(request.Id);
-            //pocos[0].Applicant = Guid.Parse(request.Applicant);
-            //pocos[0].CertificateDiploma = request.CertificateDiploma;
-            //pocos[0].Major = request.Major;
-            //pocos[0].CompletionPercent = Byte.Parse(request.CompletionPercent.ToString());
-            //pocos[0].CompletionDate = request.CompletionDate.ToDateTime();
-            //pocos[0].StartDate = request.StartDate.ToDateTime();
-
+            pocos[0].Id = Guid.Parse(request.Id);
+            pocos[0].Login = Guid.Parse(request.Login);
+            pocos[0].CurrentSalary =  Convert.ToDecimal(request.CurrentSalary);
+            pocos[0].CurrentRate = Convert.ToDecimal(request.CurrentRate);
+            pocos[0].Currency = request.Currency;
+            pocos[0].Country = request.Country;
+            pocos[0].Province = request.Province;
+            pocos[0].Street = request.Street;
+            pocos[0].City = request.City;
+            pocos[0].PostalCode = request.PostalCode;
+   
 
             _logic.Add(pocos);
             return new Task<Empty>(null);
@@ -38,17 +41,64 @@ namespace CareerCloud.gRPC.Services
 
         public override Task<Empty> DeleteApplicantProfile(ApplicantProfilePayload request, ServerCallContext context)
         {
-            return base.DeleteApplicantProfile(request, context);
+            ApplicantProfilePoco[] pocos = new ApplicantProfilePoco[1];
+
+            pocos[0].Id = Guid.Parse(request.Id);
+            pocos[0].Login = Guid.Parse(request.Login);
+            pocos[0].CurrentSalary = Convert.ToDecimal(request.CurrentSalary);
+            pocos[0].CurrentRate = Convert.ToDecimal(request.CurrentRate);
+            pocos[0].Currency = request.Currency;
+            pocos[0].Country = request.Country;
+            pocos[0].Province = request.Province;
+            pocos[0].Street = request.Street;
+            pocos[0].City = request.City;
+            pocos[0].PostalCode = request.PostalCode;
+
+
+            _logic.Delete(pocos);
+            return new Task<Empty>(null);
         }
 
         public override Task<Empty> UpdateApplicantProfile(ApplicantProfilePayload request, ServerCallContext context)
         {
-            return base.UpdateApplicantProfile(request, context);
+            ApplicantProfilePoco[] pocos = new ApplicantProfilePoco[1];
+
+            pocos[0].Id = Guid.Parse(request.Id);
+            pocos[0].Login = Guid.Parse(request.Login);
+            pocos[0].CurrentSalary = Convert.ToDecimal(request.CurrentSalary);
+            pocos[0].CurrentRate = Convert.ToDecimal(request.CurrentRate);
+            pocos[0].Currency = request.Currency;
+            pocos[0].Country = request.Country;
+            pocos[0].Province = request.Province;
+            pocos[0].Street = request.Street;
+            pocos[0].City = request.City;
+            pocos[0].PostalCode = request.PostalCode;
+
+
+            _logic.Update(pocos);
+            return new Task<Empty>(null);
         }
 
         public override Task<ApplicantProfilePayload> ReadApplicantProfile(ApplicantRequest request, ServerCallContext context)
         {
-            return base.ReadApplicantProfile(request, context);
+            ApplicantProfilePoco poco = _logic.Get(Guid.Parse(request.Id));
+            return new Task<ApplicantProfilePayload>(
+                    () => new ApplicantProfilePayload()
+                    {
+                        Id = poco.Id.ToString(),
+                        Login = poco.Login.ToString(),
+                        CurrentSalary = poco.CurrentSalary is null ? 0 : Convert.ToDouble(poco.CurrentSalary),
+                        CurrentRate = poco.CurrentRate is null ? 0 : Convert.ToDouble(poco.CurrentRate),
+                        Currency = poco.Currency,
+                        Country = poco.Country,
+                        Province = poco.Province,
+                        Street = poco.Street,
+                        City = poco.City,
+                        PostalCode = poco.PostalCode
+          
+                    }
+            );
+
         }
     }
 }
