@@ -8,10 +8,10 @@ option csharp_namespace = "CareerCloud.gRPC.Protos";
 package CareerCloud.gRPC;
 
 service ApplicantResume {
-	rpc ReadApplicantEducation(ApplicantResumeRequest) returns (ApplicantResumePayload);
-	rpc CreateApplicantEducation(ApplicantResumePayload) returns (google.protobuf.Empty);
-	rpc UpdateApplicantEducation(ApplicantResumePayload) returns (google.protobuf.Empty);
-	rpc DeleteApplicantEducation(ApplicantResumePayload) returns (google.protobuf.Empty);
+	rpc ReadApplicantResume(ApplicantResumeRequest) returns (ApplicantResumePayload);
+	rpc CreateApplicantResume(ApplicantResumePayload) returns (google.protobuf.Empty);
+	rpc UpdateApplicantResume(ApplicantResumePayload) returns (google.protobuf.Empty);
+	rpc DeleteApplicantResume(ApplicantResumePayload) returns (google.protobuf.Empty);
 
 }
 
